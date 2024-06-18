@@ -1,0 +1,8 @@
+# ros2 run tf2_ros static_transform_publisher 0.1 0 0.2 0 0 0 camera_imu_optical_frame base_link 
+
+#    ros2 launch realsense2_camera rs_launch.py pointcloud.enable:=true enable_accel:=true enable_gyro:=true unite_imu_method:=1
+# or ros2 launch realsense2_camera rs_launch.py pointcloud.enable:=true enable_accel:=true enable_gyro:=true unite_imu_method:=2 
+
+# ros2 launch octomap_server octomap_mapping.launch.xml
+
+# ros2 run imu_filter_madgwick imu_filter_madgwick_node --ros-args -p use_mag:=false -r /imu/data_raw:=/camera/imu

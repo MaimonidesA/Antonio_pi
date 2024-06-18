@@ -1,0 +1,12 @@
+[submodule "rplidar_ros2"]
+	path =Antonio_Docker/antonio_ws/src/rplidar_ros2
+	url = https://github.com/babakhani/rplidar_ros2.git
+
+[submodule "sllidar_ros2"]
+	path =Antonio_Docker/antonio_ws/src/sllidar_ros2
+	url = https://github.com/Slamtec/sllidar_ros2.git
+
+[submodule "Antonio_Docker/antonio_ws/src/Xsens_MTi_ROS_Driver_and_Ntrip_Client"]
+	path = Antonio_Docker/antonio_ws/src/Xsens_MTi_ROS_Driver_and_Ntrip_Client
+	url = https://github.com/jiminghe/Xsens_MTi_ROS_Driver_and_Ntrip_Client.git
+	branch = ros2
