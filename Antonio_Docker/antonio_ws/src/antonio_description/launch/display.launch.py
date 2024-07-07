@@ -48,7 +48,7 @@ def generate_launch_description():
     )
     rplidar_s2_Node = launch_ros.actions.Node(
             package='sllidar_ros2',
-            executable='sllidar_node',
+            executable='sllidar_node', #  /dev/ttyUSB0
             name='sllidar_node',
             parameters=[{'channel_type':channel_type,
                          'serial_port': serial_port, 
