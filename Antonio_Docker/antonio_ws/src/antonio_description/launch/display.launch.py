@@ -4,6 +4,8 @@ import launch_ros
 import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
+from pathlib import Path
 
 def generate_launch_description():
    # world_path=os.path.join(pkg_share, 'world/my_world.sdf')
@@ -14,10 +16,13 @@ def generate_launch_description():
     channel_type =  LaunchConfiguration('channel_type', default='serial')
     serial_port = LaunchConfiguration('serial_port', default='/dev/ttyUSB0')
     serial_baudrate = LaunchConfiguration('serial_baudrate', default='1000000') #for s2 is 1000000
-    frame_id = LaunchConfiguration('frame_id', default='lidar_link')
+    frame_id = LaunchConfiguration('frame_id', default='Floor_scan')
     inverted = LaunchConfiguration('inverted', default='false')
     angle_compensate = LaunchConfiguration('angle_compensate', default='true')
     scan_mode = LaunchConfiguration('scan_mode', default='DenseBoost')
+    # Xsens
+    xsens_parameters_file_path_1 = Path(get_package_share_directory('xsens_mti_ros2_driver'), 'param', 'xsens_mti_node_Left.yaml')
+    xsens_parameters_file_path_2 = Path(get_package_share_directory('xsens_mti_ros2_driver'), 'param', 'xsens_mti_node_right.yaml')
 
 
     robot_state_publisher_node = launch_ros.actions.Node(
@@ -42,9 +47,10 @@ def generate_launch_description():
             'serial_port': '/dev/ttyUSB1',
             'serial_baudrate': 115200,  # A1 / A2
             # 'serial_baudrate': 256000, # A3
-            'frame_id': 'Floor_scan',
+            'frame_id': 'lidar_link',
+            'topic_name': 'scan',
             'inverted': False,
-            'angle_compensate': True,}],  
+            'angle_compensate': True }],  
     )
     rplidar_s2_Node = launch_ros.actions.Node(
             package='sllidar_ros2',
@@ -54,9 +60,9 @@ def generate_launch_description():
                          'serial_port': serial_port, 
                          'serial_baudrate': serial_baudrate, 
                          'frame_id': frame_id,
-                         'inverted': inverted, 
+                         'inverted': inverted,
                          'angle_compensate': angle_compensate, 
-                         'scan_mode': scan_mode}],
+                         'scan_mode': scan_mode }],
             output='screen')
 
     rviz_node = launch_ros.actions.Node(
@@ -66,6 +72,57 @@ def generate_launch_description():
         output='screen',
         arguments=['-d', LaunchConfiguration('rvizconfig')],
     )
+
+    xsens_mti_node_1 = launch_ros.actions.Node(
+            package='xsens_mti_ros2_driver',
+            executable='xsens_mti_node',
+            name='xsens_mti_node_1',
+            namespace='Left_imu',
+            output='screen',
+            parameters=[xsens_parameters_file_path_1],
+            remappings=[
+                ('/filter/free_acceleration', '/Left_imu/filter/free_acceleration'),
+                ('/filter/quaternion', '/Left_imu/filter/quaternion'),
+                ('/filter/twist', '/Left_imu/filter/twist'),
+                ('/imu/acceleration', '/Left_imu/imu/acceleration'),
+                ('/imu/angular_velocity', '/Left_imu/imu/angular_velocity'),
+                ('/imu/data', '/Left_imu/imu/data'),
+                ('/imu/dq', '/Left_imu/imu/dq'),
+                ('/imu/dv', '/Left_imu/imu/dv'),
+                ('/imu/mag', '/Left_imu/imu/mag'),
+                ('/imu/time_ref', '/Left_imu/imu/time_ref'),
+                ('/pressure', '/Left_imu/pressure'),
+                ('/status', '/Left_imu/status'),
+                ('/temperature', '/Left_imu/temperature'),
+                ('/tf', '/Left_imu/tf'),
+                ('/utctime', '/Left_imu/utctime')
+            ]
+            )
+    xsens_mti_node_2 = launch_ros.actions.Node(
+            package='xsens_mti_ros2_driver',
+            executable='xsens_mti_node',
+            name='xsens_mti_node_2',
+            namespace='right_imu',
+            output='screen',
+            parameters=[xsens_parameters_file_path_2],
+            remappings=[
+                ('/filter/free_acceleration', '/right_imu/filter/free_acceleration'),
+                ('/filter/quaternion', '/right_imu/filter/quaternion'),
+                ('/filter/twist', '/right_imu/filter/twist'),
+                ('/imu/acceleration', '/right_imu/imu/acceleration'),
+                ('/imu/angular_velocity', '/right_imu/imu/angular_velocity'),
+                ('/imu/data', '/right_imu/imu/data'),
+                ('/imu/dq', '/right_imu/imu/dq'),
+                ('/imu/dv', '/right_imu/imu/dv'),
+                ('/imu/mag', '/right_imu/imu/mag'),
+                ('/imu/time_ref', '/right_imu/imu/time_ref'),
+                ('/pressure', '/right_imu/pressure'),
+                ('/status', '/right_imu/status'),
+                ('/temperature', '/right_imu/temperature'),
+                ('/tf', '/right_imu/tf'),
+                ('/utctime', '/right_imu/utctime')
+            ]
+            )
 
 
 
@@ -117,7 +174,9 @@ def generate_launch_description():
         #joint_state_publisher_node,
         #joint_state_publisher_gui_node,
         #robot_state_publisher_node,
-        #robot_localization_node,
+        #robot_localization_node, 
+        #xsens_mti_node_1,
+        #xsens_mti_node_2,
         rplidar_s2_Node,
         rplidar_A1_Node,
         #rviz_node,
