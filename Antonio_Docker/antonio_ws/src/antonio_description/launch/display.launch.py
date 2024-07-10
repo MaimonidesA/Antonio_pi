@@ -14,7 +14,7 @@ def generate_launch_description():
     default_rviz_config_path = os.path.join(pkg_share, 'rviz/urdf_config.rviz')
     # rplidar s2
     channel_type =  LaunchConfiguration('channel_type', default='serial')
-    serial_port = LaunchConfiguration('serial_port', default='/dev/ttyUSB0')
+    serial_port = LaunchConfiguration('serial_port', default='/dev/rplidar_S1')
     serial_baudrate = LaunchConfiguration('serial_baudrate', default='1000000') #for s2 is 1000000
     frame_id = LaunchConfiguration('frame_id', default='Floor_scan')
     inverted = LaunchConfiguration('inverted', default='false')
@@ -44,7 +44,7 @@ def generate_launch_description():
         executable='rplidar_composition',
         output='screen',
         parameters=[{
-            'serial_port': '/dev/ttyUSB1',
+            'serial_port': '/dev/lidar_A1',
             'serial_baudrate': 115200,  # A1 / A2
             # 'serial_baudrate': 256000, # A3
             'frame_id': 'lidar_link',
@@ -162,7 +162,6 @@ def generate_launch_description():
             'scan_mode',
             default_value=scan_mode,
             description='Specifying scan mode of lidar'),
-
 
         launch.actions.DeclareLaunchArgument(name='model', default_value=default_model_path,
                                             description='Absolute path to robot urdf file'),
