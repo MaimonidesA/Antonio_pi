@@ -7,6 +7,7 @@ docker run --privileged -it \
  --network host \
  --ipc=host \
  -v /tmp/.X11-unix:/tmp/.X11-unix \
+ -v /dev:/dev \
  -e DISPLAY=$DISPLAY \
  --rm antonio_image
  
